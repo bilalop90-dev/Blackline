@@ -1,0 +1,15 @@
+# Build output
+redactor-api/target/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Env
+*.local
+.env

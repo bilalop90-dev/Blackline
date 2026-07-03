@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume PDF Redactor</title>
+
+    <!-- Google Fonts: Inter + JetBrains Mono (same brand set as ENV Vault Checker) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <span class="brand-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <rect x="8" y="12" width="8" height="4" fill="currentColor" stroke="none"></rect>
+                </svg>
+            </span>
+            <span class="brand-name">Resume PDF Redactor</span>
+        </div>
+        <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle theme">
+            <!-- icon injected by app.js based on active theme -->
+        </button>
+    </nav>
+
+    <main class="container container-wide">
+
+        <!-- HERO -->
+        <section class="hero">
+            <h1>Redact your <span class="highlight">PDF</span> — permanently</h1>
+            <p class="hero-sub">Upload a resume, ID, or statement. Draw black boxes over anything sensitive and download a copy where that content is gone for good — not just covered up.</p>
+        </section>
+
+        <!-- ZERO TRUST NOTICE -->
+        <div class="trust-badge is-ready">
+            <span class="trust-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                </svg>
+            </span>
+            <span class="trust-text">Zero-trust mode — your file is never uploaded. Redaction happens entirely in your browser.</span>
+        </div>
+
+        <!-- ERROR STATE -->
+        <div class="error-banner" id="errorBanner" hidden>
+            <span class="error-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                    <line x1="12" y1="9" x2="12" y2="13"></line>
+                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                </svg>
+            </span>
+            <span class="error-text" id="errorText"></span>
+        </div>
+
+        <!-- DROPZONE (landing state) -->
+        <section class="drop-section" id="dropSection">
+            <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-label="Upload a PDF file">
+                <span class="drop-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="17 8 12 3 7 8"></polyline>
+                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                    </svg>
+                </span>
+                <p class="drop-title">Drop your PDF here, or click to browse</p>
+                <p class="drop-sub">Max 25 MB · processed locally · nothing ever leaves this tab</p>
+                <input type="file" id="fileInput" accept="application/pdf,.pdf" hidden>
+            </div>
+        </section>
+
+        <!-- WORKSPACE (hidden until a PDF loads) -->
+        <section class="workspace" id="workspace" hidden>
+
+            <div class="toolbar">
+                <div class="toolbar-group file-chip">
+                    <span class="file-chip-name" id="fileChipName"></span>
+                    <span class="file-chip-meta" id="fileChipMeta"></span>
+                </div>
+                <div class="toolbar-group">
+                    <button class="btn btn-secondary btn-compact" id="zoomOutBtn" type="button" aria-label="Zoom out">−</button>
+                    <span class="zoom-level" id="zoomLevel" aria-live="polite">120%</span>
+                    <button class="btn btn-secondary btn-compact" id="zoomInBtn" type="button" aria-label="Zoom in">+</button>
+                </div>
+                <div class="toolbar-group">
+                    <span class="box-count" id="boxCount">0 boxes</span>
+                    <button class="btn btn-secondary" id="undoBtn" type="button" disabled>Undo box</button>
+                    <button class="btn btn-ghost" id="clearBtn" type="button" disabled>Clear all</button>
+                    <button class="btn btn-ghost" id="resetBtn" type="button">Start over</button>
+                </div>
+            </div>
+
+            <p class="draw-hint" id="drawHint">
+                Click and drag on a page to draw a redaction box over anything sensitive.
+            </p>
+
+            <div class="pages" id="pages" aria-label="PDF pages"></div>
+
+            <!-- SUCCESS STATE -->
+            <div class="success-banner" id="successBanner" hidden>
+                <span class="success-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
+                </span>
+                <span class="success-text" id="successText"></span>
+            </div>
+
+            <div class="export-bar">
+                <span class="export-hint" id="exportHint">Draw at least one box to enable export.</span>
+                <button class="btn btn-primary btn-export" id="exportBtn" type="button" disabled>
+                    <span class="btn-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                    </span>
+                    <span class="btn-label" id="exportBtnLabel">Apply Redaction &amp; Export</span>
+                </button>
+            </div>
+
+        </section>
+
+        <!-- HOW THIS WORKS -->
+        <details class="how-section" id="how-it-works">
+            <summary>
+                <span class="how-title">
+                    <span class="how-title-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="16" x2="12" y2="12"></line>
+                            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                        </svg>
+                    </span>
+                    How this works
+                </span>
+                <span class="how-chevron" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
+                </span>
+            </summary>
+
+            <ol class="how-steps">
+                <li class="how-step">
+                    <span class="how-step-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="11" width="18" height="11" rx="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                    </span>
+                    <p>Your PDF is opened with JavaScript's FileReader API and rendered with Mozilla's pdf.js — entirely inside this browser tab. No upload, no server, no exceptions.</p>
+                </li>
+                <li class="how-step">
+                    <span class="how-step-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+                            <rect x="8" y="10" width="8" height="4" fill="currentColor" stroke="none"></rect>
+                        </svg>
+                    </span>
+                    <p>You draw redaction boxes over anything sensitive. The boxes are tracked per page in your browser's memory only.</p>
+                </li>
+                <li class="how-step">
+                    <span class="how-step-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="16 18 22 12 16 6"></polyline>
+                            <polyline points="8 6 2 12 8 18"></polyline>
+                        </svg>
+                    </span>
+                    <p>On export, every page is re-rendered as a flat image with your boxes burned in as solid black, then rebuilt into a fresh PDF with pdf-lib. The original text layer, fonts, and metadata are not copied over — the content under a box isn't hidden, it no longer exists.</p>
+                </li>
+                <li class="how-step">
+                    <span class="how-step-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                    </span>
+                    <p>The redacted PDF is assembled in memory and handed to your browser's download manager. Try copy-pasting over a black box in the result — there's nothing there to copy.</p>
+                </li>
+            </ol>
+
+            <p class="how-verify">You can verify this yourself: open DevTools → Network tab → load a PDF, redact, and export. You will see zero outbound requests carrying your file — the only network traffic is this page's own static assets.</p>
+        </details>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <p>Your documents never leave your browser. <a href="#how-it-works" class="footer-link">How this works
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="footer-arrow" aria-hidden="true">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+        </a></p>
+    </footer>
+
+    <!-- pdf.js (render) + pdf-lib (rebuild) — pinned versions, loaded from CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
