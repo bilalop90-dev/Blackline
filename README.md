@@ -1,4 +1,7 @@
-# Resume PDF Redactor
+# Blackline
+
+**Blackline — permanently redact sensitive info from your PDFs, 100% in your
+browser. Nothing you upload ever leaves your device.**
 
 A zero-trust PDF redaction tool. Upload a resume, ID, or bank statement, draw
 black boxes over anything sensitive, and download a copy where that content is

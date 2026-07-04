@@ -16,7 +16,7 @@
     <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>Resume PDF Redactor API</name>
+    <name>Blackline API</name>
     <description>Health/keep-alive endpoint only. Never receives a single file byte — all redaction happens in the browser.</description>
 
     <properties>

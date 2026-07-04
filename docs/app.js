@@ -1,5 +1,5 @@
 /*
- * Resume PDF Redactor — client-side redaction engine.
+ * Blackline — client-side redaction engine.
  *
  * Zero-trust by architecture: the PDF is read with FileReader, rendered with
  * pdf.js, and rebuilt with pdf-lib entirely in this tab. On export every page
@@ -452,7 +452,7 @@
         'The content under each box is not present in the new file.';
       successBanner.hidden = false;
     } catch (err) {
-      console.error('[redactor] export failed:', err);
+      console.error('[blackline] export failed:', err);
       showError('Export failed while rebuilding the PDF. Please try again — your file is still only in this tab.');
     } finally {
       state.exporting = false;
