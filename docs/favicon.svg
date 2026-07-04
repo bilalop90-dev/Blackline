@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <rect width="100" height="100" rx="20" fill="#0d1117"/>
+  <!-- document page -->
+  <rect x="25" y="13" width="50" height="74" rx="7" fill="#e6edf3"/>
+  <!-- redaction bars -->
+  <g fill="#010409">
+    <rect x="32" y="28" width="36" height="10" rx="3"/>
+    <rect x="32" y="45" width="24" height="10" rx="3"/>
+    <rect x="32" y="62" width="30" height="10" rx="3"/>
+  </g>
+</svg>
