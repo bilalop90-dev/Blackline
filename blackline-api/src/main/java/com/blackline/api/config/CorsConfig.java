@@ -1,4 +1,4 @@
-package com.pdfredactor.api.config;
+package com.blackline.api.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;

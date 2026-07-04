@@ -11,8 +11,8 @@
         <relativePath/>
     </parent>
 
-    <groupId>com.pdfredactor</groupId>
-    <artifactId>pdf-redactor-api</artifactId>
+    <groupId>com.blackline</groupId>
+    <artifactId>blackline-api</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 

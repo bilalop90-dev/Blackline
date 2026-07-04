@@ -21,7 +21,7 @@ rectangle, inspect the file: there's nothing there.
 
 ```
 docs/            Static client — viewer, box-drawing UI, and redaction engine
-redactor-api/    Spring Boot service — GET /api/ping only (keep-alive)
+blackline-api/   Spring Boot service — GET /api/ping only (keep-alive)
 ```
 
 ## Run locally
@@ -40,14 +40,14 @@ at `docs/assets/sample-resume.pdf` if you want something safe to practice on.
 **Backend** (optional — the frontend is fully standalone and makes zero API calls):
 
 ```bash
-cd redactor-api
+cd blackline-api
 ./mvnw spring-boot:run
 ```
 
 Verify it's up:
 
 ```bash
-curl http://localhost:8080/api/ping     # {"status":"ok","service":"pdf-redactor-api"}
+curl http://localhost:8080/api/ping     # {"status":"ok","service":"blackline-api"}
 ```
 
 ## How the redaction is permanent

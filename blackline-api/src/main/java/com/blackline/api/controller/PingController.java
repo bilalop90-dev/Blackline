@@ -1,4 +1,4 @@
-package com.pdfredactor.api.controller;
+package com.blackline.api.controller;
 
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,6 +24,6 @@ public class PingController {
      */
     @GetMapping(value = "/ping", produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, String> ping() {
-        return Map.of("status", "ok", "service", "pdf-redactor-api");
+        return Map.of("status", "ok", "service", "blackline-api");
     }
 }
