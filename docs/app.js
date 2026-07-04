@@ -74,6 +74,23 @@
     applyTheme(current === 'dark' ? 'light' : 'dark');
   });
 
+  // ── Footer "How this works" link ─────────────────────────────────────────
+  // The plain anchor felt dead: the target <details> stayed collapsed and the
+  // page is often too short to scroll. Expand the section, then glide to it.
+  const howSection = $('how-it-works');
+  const footerLink = document.querySelector('.footer-link');
+  if (footerLink && howSection) {
+    footerLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      howSection.open = true;
+      howSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      history.replaceState(null, '', '#how-it-works');
+    });
+  }
+  if (howSection && location.hash === '#how-it-works') {
+    howSection.open = true;
+  }
+
   // ── Errors / banners ─────────────────────────────────────────────────────
   function showError(message) {
     errorText.textContent = message;
